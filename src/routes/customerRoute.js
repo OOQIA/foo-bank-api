@@ -1,0 +1,17 @@
+import express from 'express';
+import customers from '../models/customer';
+import CustomerController from '../controllers/customerConstroller';
+
+export default (db) => {
+  const router = express.Router();
+  const controller = new CustomerController(customers(db));
+
+  router.route('/users')
+    .post((req, res) => controller.post(req, res));
+
+  router.route('/users/:user_id')
+    .get((req, res) => controller.get(req, res))
+    .put((req, res) => controller.put(req, res));
+
+  return router;
+};
