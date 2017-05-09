@@ -1,0 +1,38 @@
+[
+    {
+        "ssn": "018360654",
+        "firstName": "John",
+        "surname": "Smith",
+        "address1": "801 24th St N 3 1",
+        "city": "Birmingham",
+        "stateCode": "AL",
+        "postalCode": "35203",
+        "countryCode": "USA",
+        "birthDate": "1986-05-19",
+        "mobilePhoneNumber": "5551133666",
+        "emailAddress": "mail@mail.com",
+        "driverLicense": "123456789012345",
+        "driverLicenseIssueLocation": "AL",
+        "driverLicenseIssueDate": "2014-02-02",
+        "driverLicenseExpirationDate": "2019-02-02",
+        "thirdPartyUserId": "user@example.com"
+    },
+    {
+        "ssn": "017365658",
+        "firstName": "Manuel",
+        "surname": "Anderson",
+        "address1": "801 24th St N 3 1",
+        "city": "New York",
+        "stateCode": "NY",
+        "postalCode": "74587",
+        "countryCode": "USA",
+        "birthDate": "1990-12-19",
+        "mobilePhoneNumber": "5551133888",
+        "emailAddress": "mail2@mail2.com",
+        "driverLicense": "987654321012345",
+        "driverLicenseIssueLocation": "NY",
+        "driverLicenseIssueDate": "2016-12-02",
+        "driverLicenseExpirationDate": "2022-12-02",
+        "thirdPartyUserId": "user2@example.com"
+    }    
+]

@@ -6,29 +6,28 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'ssn',
       validate: {
-        len: [11],
-        is: /^[a-z]+$/i, //TODO: Add Social security number regExp validation
+        len: [0, 11],
       },
     },
     firstName: {
       type: Datatype.STRING,
       field: 'first_name',
       validate: {
-        len: [20],
+        len: [0, 20],
       },
     },
     surname: {
       type: Datatype.STRING,
       field: 'surname',
       validate: {
-        len: [20],
+        len: [0, 20],
       },
     },
     address1: {
       type: Datatype.STRING,
       field: 'address1',
       validate: {
-        len: [40],
+        len: [0, 40],
       },
     },
     address2: {
@@ -36,35 +35,35 @@ export default function (db) {
       field: 'address2',
       allowNull: true,
       validate: {
-        len: [40],
+        len: [0, 40],
       },
     },
     city: {
       type: Datatype.STRING,
       field: 'city',
       validate: {
-        len: [40],
+        len: [0, 40],
       },
     },
     stateCode: {
       type: Datatype.STRING,
       field: 'state_code',
       validate: {
-        len: [2],
+        len: [0, 2],
       },
     },
     postalCode: {
       type: Datatype.STRING,
       field: 'postal_code',
       validate: {
-        len: [10],
+        len: [0, 10],
       },
     },
     countryCode: {
       type: Datatype.STRING,
       field: 'country_code',
       validate: {
-        len: [30],
+        len: [0, 30],
       },
     },
     birthDate: {
@@ -75,14 +74,14 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'mobile_phone_number',
       validate: {
-        len: [10],
+        len: [0, 10],
       },
     },
     emailAddress: {
       type: Datatype.STRING,
       field: 'email_address',
       validate: {
-        len: [50],
+        len: [0, 50],
         isEmail: true,
       },
     },
@@ -91,7 +90,7 @@ export default function (db) {
       field: 'state_id',
       allowNull: true,
       validate: {
-        len: [15],
+        len: [0, 15],
       },
     },
     stateIdIssueLocation: {
@@ -99,7 +98,7 @@ export default function (db) {
       field: 'state_id_issue_location',
       allowNull: true,
       validate: {
-        len: [20],
+        len: [0, 20],
       },
     },
     stateIdIssueDate: {
@@ -117,7 +116,7 @@ export default function (db) {
       field: 'passport_id',
       allowNull: true,
       validate: {
-        len: [15],
+        len: [0, 15],
       },
     },
     passportIdIssueLocation: {
@@ -125,7 +124,7 @@ export default function (db) {
       field: 'passport_id_issue_location',
       allowNull: true,
       validate: {
-        len: [20],
+        len: [0, 20],
       },
     },
     passportIdIssueDate: {
@@ -143,7 +142,7 @@ export default function (db) {
       field: 'driver_license',
       allowNull: true,
       validate: {
-        len: [15],
+        len: [0, 15],
       },
     },
     driverLicenseIssueLocation: {
@@ -151,7 +150,7 @@ export default function (db) {
       field: 'driver_license_issue_location',
       allowNull: true,
       validate: {
-        len: [20],
+        len: [0, 20],
       },
     },
     driverLicenseIssueDate: {
@@ -168,7 +167,7 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'third_party_user_id',
       validate: {
-        len: [100],
+        len: [0, 100],
       },
     },
   }, {
