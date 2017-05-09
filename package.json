@@ -1,7 +1,11 @@
 {
   "name": "foo-bank-api",
   "version": "1.0.0",
-  "description": "Foo Bank WEB API",
+  "description": "Foo Bank Web API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OOQIA/foo-bank-api.git"
+  },
   "main": "dist",
   "scripts": {
     "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-0\"",
