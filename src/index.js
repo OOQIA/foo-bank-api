@@ -4,8 +4,11 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import config from './configs/config.json';
 import initializeDb from './db';
+import CustomerRouter from './routes/customerRoute';
 
 const app = express();
+const baseApiUrl = '/api/v2';
+
 app.server = http.createServer(app);
 
 // 3rd party middleware
@@ -22,6 +25,9 @@ initializeDb((err, db) => {
     console.error(err); // eslint-disable-line no-console
     return;
   }
+  const customerRouter = CustomerRouter(db);
+  app.use(baseApiUrl, customerRouter);
+
   app.get('/', (req, res) => {
     res.json({ version: '1.0.0' });
   });
