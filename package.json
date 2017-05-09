@@ -12,7 +12,9 @@
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "start": "node dist",
     "prestart": "npm run -s build",
-    "test": "eslint src"
+    "test": "eslint src",
+    "migrate": "node dist/migrations.js",
+    "premigrate": "npm run -s build"
   },
   "eslintConfig": {
     "parser": "babel-eslint",
