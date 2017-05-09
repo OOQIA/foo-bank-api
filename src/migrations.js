@@ -1,6 +1,7 @@
 import initializeDb from './db';
 import customer from './models/customer';
 import transaction from './models/transaction';
+import customerSeed from './seeds/customer-seed.json';
 
 initializeDb((error, db) => {
   if (error) {
@@ -8,6 +9,8 @@ initializeDb((error, db) => {
     return;
   }
 
-  customer(db).sync();
+  customer(db).sync()
+    .then(() => db.models.Customer.bulkCreate(customerSeed));
+
   transaction(db).sync();
 });
