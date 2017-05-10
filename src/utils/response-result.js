@@ -1,3 +1,5 @@
+import humps from 'humps';
+
 export default class ResponseResult {
   constructor(statusCode, data = null, info = '', errors = []) {
     let infoMessage = info;
@@ -25,6 +27,7 @@ export default class ResponseResult {
       delete this.data;
     } else {
       this.data = cleanObject(this.data);
+      this.data = humps.decamelizeKeys(this.data);
     }
   }
 }
