@@ -4,8 +4,8 @@ const NOT_FOUND = 404;
 const CREATED = 201;
 const OK = 200;
 
-export const notFound = (res) => {
-  const result = new ResponseResult(NOT_FOUND);
+export const notFound = (res, id) => {
+  const result = new ResponseResult(NOT_FOUND, null, null, [], id);
   res.status(NOT_FOUND);
   res.json(result);
 };

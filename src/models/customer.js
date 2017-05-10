@@ -160,12 +160,12 @@ export default function (db) {
     },
     driverLicenseIssueDate: {
       type: Datatype.DATE,
-      field: 'state_id_issue_date',
+      field: 'driver_license_issue_date',
       allowNull: true,
     },
     driverLicenseExpirationDate: {
-      type: Datatype.STRING,
-      field: 'state_id_expiration_date',
+      type: Datatype.DATE,
+      field: 'driver_license_expiration_date',
       allowNull: true,
     },
     thirdPartyUserId: {
@@ -179,27 +179,27 @@ export default function (db) {
     underscored: true,
     freezeTableName: true, // Model tableName will be the same as the model name
     validate: {
-      stateIdCompleteInformation: () => {
+      stateIdCompleteInformation() {
         if ((this.stateId === null) !==
-            (this.stateIdIssueLocation === null) !==
-            (this.stateIdIssueDate === null) !==
-            (this.stateIdExpirationDate === null)) {
+          (this.stateIdIssueLocation === null) !==
+          (this.stateIdIssueDate === null) !==
+          (this.stateIdExpirationDate === null)) {
           throw new Error('All State information should be provided.');
         }
       },
-      passportCompleteInformation: () => {
+      passportCompleteInformation() {
         if ((this.passportId === null) !==
-            (this.passportIdIssueLocation === null) !==
-            (this.passportIdIssueDate === null) !==
-            (this.passportIdExpirationDate === null)) {
+          (this.passportIdIssueLocation === null) !==
+          (this.passportIdIssueDate === null) !==
+          (this.passportIdExpirationDate === null)) {
           throw new Error('All Passport information should be provided.');
         }
       },
-      driverLicenseCompleteInformation: () => {
+      driverLicenseCompleteInformation() {
         if ((this.driverLicense === null) !==
-            (this.driverLicenseIssueLocation === null) !==
-            (this.driverLicenseIssueDate === null) !==
-            (this.driverLicenseExpirationDate === null)) {
+          (this.driverLicenseIssueLocation === null) !==
+          (this.driverLicenseIssueDate === null) !==
+          (this.driverLicenseExpirationDate === null)) {
           throw new Error('All Driver license information should be provided.');
         }
       },

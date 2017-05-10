@@ -1,4 +1,5 @@
 import humps from 'humps';
+import isUUID from 'validator/lib/isUUID';
 import { notFound, ok, created } from '../utils/action-result';
 import {
   CUSTOMER_CREATED_OK,
@@ -13,13 +14,17 @@ export default class CustomerController {
 
   get(req, res) {
     const id = req.params.user_id;
-    return this.customerSet
-      .findOne({ where: { id } })
+    if (!isUUID(id, 4)) {
+      notFound(res, id);
+      return;
+    }
+    this.customerSet
+      .findById((id), { attributes: { exclude: ['created_at', 'updated_at'] } })
       .then((data) => {
         if (data) {
           ok(res, data.dataValues, GET_CUSTOMER_OK);
         } else {
-          notFound(res);
+          notFound(res, id);
         }
       });
   }
@@ -39,12 +44,17 @@ export default class CustomerController {
   put(req, res) {
     const id = req.params.user_id;
     this.customerSet
-      .findOne({ where: { id } })
+      .findById(id)
       .then((data) => {
         if (data) {
-          ok(res, null, CUSTOMER_UPDATED_OK);
+          const newCustomerValues = humps.camelizeKeys(req.body);
+          this.customerSet
+            .update(newCustomerValues, { where: { id } })
+            .then(() => {
+              ok(res, null, CUSTOMER_UPDATED_OK);
+            });
         } else {
-          notFound(res);
+          notFound(res, id);
         }
       });
   }

@@ -1,7 +1,7 @@
 import humps from 'humps';
 
 export default class ResponseResult {
-  constructor(statusCode, data = null, info = '', errors = []) {
+  constructor(statusCode, data = null, info = '', errors = [], id = 0) {
     let infoMessage = info;
     let internalCode = null;
 
@@ -9,6 +9,11 @@ export default class ResponseResult {
       case 404:
         infoMessage = 'Not Found';
         internalCode = 'not_found';
+        errors.push({
+          customerDescription: `Invalid uuid=[${id}]!`,
+          severity: 'MAJOR',
+          language: 'EN',
+        });
         break;
       default:
         break;

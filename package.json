@@ -74,7 +74,8 @@
     "humps": "^2.0.0",
     "pg": "^6.1.5",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^3.30.4"
+    "sequelize": "^3.30.4",
+    "validator": "^7.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
