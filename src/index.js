@@ -2,6 +2,7 @@ import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
 import config from './configs/config.json';
 import initializeDb from './db';
 import CustomerRouter from './routes/customerRoute';
@@ -19,6 +20,9 @@ app.use(cors({
 app.use(bodyParser.json({
   limit: config.bodyLimit,
 }));
+
+// Protect your app from some well-known web vulnerabilities by setting HTTP headers appropriately.
+app.use(helmet());
 
 initializeDb((err, db) => {
   if (err) {
