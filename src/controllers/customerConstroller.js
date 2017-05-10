@@ -1,3 +1,4 @@
+import humps from 'humps';
 import { notFound, ok, created } from '../utils/action-result';
 import {
   CUSTOMER_CREATED_OK,
@@ -24,11 +25,15 @@ export default class CustomerController {
   }
 
   post(req, res) {
-    const customerReferenceId = '';
-    const data = {
-      user_reference_id: customerReferenceId,
-    };
-    created(res, data, CUSTOMER_CREATED_OK);
+    const newCustomer = humps.camelizeKeys(req.body);
+    this.customerSet.create(newCustomer)
+      .then((customer) => {
+        const customerReferenceId = customer.dataValues.id;
+        const data = {
+          user_reference_id: customerReferenceId,
+        };
+        created(res, data, CUSTOMER_CREATED_OK);
+      });
   }
 
   put(req, res) {
