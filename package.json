@@ -13,7 +13,8 @@
     "start": "node dist",
     "prestart": "npm run -s build",
     "lint": "eslint src",
-    "test": "mocha --timeout 10000",
+    "test": "mocha dist/tests/*.js --timeout 10000",
+    "pretest": "npm run -s build",
     "migrate": "node dist/migrations.js",
     "premigrate": "npm run -s build"
   },
