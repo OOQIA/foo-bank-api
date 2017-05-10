@@ -2,6 +2,11 @@ import Datatype from 'sequelize';
 
 export default function (db) {
   const Customer = db.define('Customer', {
+    id: {
+      type: Datatype.UUID,
+      primaryKey: true,
+      defaultValue: Datatype.UUIDV4,
+    },
     ssn: {
       type: Datatype.STRING,
       field: 'ssn',
@@ -171,7 +176,34 @@ export default function (db) {
       },
     },
   }, {
+    underscored: true,
     freezeTableName: true, // Model tableName will be the same as the model name
+    validate: {
+      stateIdCompleteInformation: () => {
+        if ((this.stateId === null) !==
+            (this.stateIdIssueLocation === null) !==
+            (this.stateIdIssueDate === null) !==
+            (this.stateIdExpirationDate === null)) {
+          throw new Error('All State information should be provided.');
+        }
+      },
+      passportCompleteInformation: () => {
+        if ((this.passportId === null) !==
+            (this.passportIdIssueLocation === null) !==
+            (this.passportIdIssueDate === null) !==
+            (this.passportIdExpirationDate === null)) {
+          throw new Error('All Passport information should be provided.');
+        }
+      },
+      driverLicenseCompleteInformation: () => {
+        if ((this.driverLicense === null) !==
+            (this.driverLicenseIssueLocation === null) !==
+            (this.driverLicenseIssueDate === null) !==
+            (this.driverLicenseExpirationDate === null)) {
+          throw new Error('All Driver license information should be provided.');
+        }
+      },
+    },
   });
 
   return Customer;
