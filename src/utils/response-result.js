@@ -1,7 +1,13 @@
 import humps from 'humps';
 
 export default class ResponseResult {
-  constructor(statusCode, data = null, info = '', errors = [], id = 0, internalCode = null) {
+  constructor(statusCode,
+    data = null,
+    info = '',
+    errors = [],
+    id = 0,
+    internalCode = null,
+    message = null) {
     let infoMessage = info;
     let internalCodeMessage = internalCode;
 
@@ -21,6 +27,7 @@ export default class ResponseResult {
     this.result = {
       code: statusCode,
       info: infoMessage,
+      message,
       internal_code: internalCodeMessage,
       errors,
     };

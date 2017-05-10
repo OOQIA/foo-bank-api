@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import config from './configs/config.json';
 import initializeDb from './db';
 import CustomerRouter from './routes/customerRoute';
+import uniqueTransaction from './middleware/unique-transaction';
 
 const app = express();
 const baseApiUrl = '/api/v2';
@@ -29,6 +30,9 @@ initializeDb((err, db) => {
     console.error(err); // eslint-disable-line no-console
     return;
   }
+
+  app.use(uniqueTransaction(db));
+
   const customerRouter = CustomerRouter(db);
   app.use(baseApiUrl, customerRouter);
 
