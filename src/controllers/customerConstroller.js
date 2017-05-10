@@ -1,3 +1,10 @@
+import { notFound, ok, created } from '../utils/action-result';
+import {
+  CUSTOMER_CREATED_OK,
+  GET_CUSTOMER_OK,
+  CUSTOMER_UPDATED_OK,
+} from './infoMessages';
+
 export default class CustomerController {
   constructor(customerSet) {
     this.customerSet = customerSet;
@@ -9,23 +16,32 @@ export default class CustomerController {
       .findOne({ where: { id } })
       .then((data) => {
         if (data) {
-          res.json(data);
+          ok(res, data.dataValues, GET_CUSTOMER_OK);
         } else {
-          res.status(404);
-          res.json({});
+          notFound(res);
         }
       });
   }
 
   post(req, res) {
-    res.status(201);
-    res.json();
+    const customerReferenceId = '';
+    const data = {
+      user_reference_id: customerReferenceId,
+    };
+    created(res, data, CUSTOMER_CREATED_OK);
   }
 
   put(req, res) {
     const id = req.params.user_id;
-    res.status(200);
-    res.json(id);
+    this.customerSet
+      .findOne({ where: { id } })
+      .then((data) => {
+        if (data) {
+          ok(res, null, CUSTOMER_UPDATED_OK);
+        } else {
+          notFound(res);
+        }
+      });
   }
 }
 
