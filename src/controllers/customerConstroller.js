@@ -1,10 +1,12 @@
 import humps from 'humps';
 import isUUID from 'validator/lib/isUUID';
-import { notFound, ok, created } from '../utils/action-result';
+import { notFound, ok, created, forbidden } from '../utils/action-result';
 import {
   CUSTOMER_CREATED_OK,
   GET_CUSTOMER_OK,
   CUSTOMER_UPDATED_OK,
+  UNIQUE_ID_EXIST,
+  INTERNAL_CODE_ID_EXIST,
 } from './infoMessages';
 
 export default class CustomerController {
@@ -38,6 +40,13 @@ export default class CustomerController {
           user_reference_id: customerReferenceId,
         };
         created(res, data, CUSTOMER_CREATED_OK);
+      }).catch((err) => {
+        if (err.name === 'SequelizeUniqueConstraintError') {
+          forbidden(res, UNIQUE_ID_EXIST, INTERNAL_CODE_ID_EXIST);
+          return;
+        }
+        res.status(200);
+        res.json(err);
       });
   }
 

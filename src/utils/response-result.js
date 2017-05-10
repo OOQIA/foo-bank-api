@@ -1,14 +1,14 @@
 import humps from 'humps';
 
 export default class ResponseResult {
-  constructor(statusCode, data = null, info = '', errors = [], id = 0) {
+  constructor(statusCode, data = null, info = '', errors = [], id = 0, internalCode = null) {
     let infoMessage = info;
-    let internalCode = null;
+    let internalCodeMessage = internalCode;
 
     switch (statusCode) {
       case 404:
         infoMessage = 'Not Found';
-        internalCode = 'not_found';
+        internalCodeMessage = 'not_found';
         errors.push({
           customerDescription: `Invalid uuid=[${id}]!`,
           severity: 'MAJOR',
@@ -21,7 +21,7 @@ export default class ResponseResult {
     this.result = {
       code: statusCode,
       info: infoMessage,
-      internal_code: internalCode,
+      internal_code: internalCodeMessage,
       errors,
     };
     this.data = data;
