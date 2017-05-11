@@ -256,7 +256,7 @@ export default function (db) {
             this.stateIdIssueDate != null && this.stateIdExpirationDate != null) {
           return;
         }
-        throw new Error('All State information should be provided.');
+        throw new Error.ValidationErrorItem('All State information should be provided.', 'Validation Error', null, null);
       },
       passportCompleteInformation() {
         if (this.passportId == null && this.passportIdIssueLocation == null &&
@@ -267,7 +267,7 @@ export default function (db) {
             this.passportIdIssueDate != null && this.passportIdExpirationDate != null) {
           return;
         }
-        throw new Error('All Passport information should be provided.');
+        throw new Error.ValidationErrorItem('All Passport information should be provided.', 'Validation Error', null, null);
       },
       driverLicenseCompleteInformation() {
         if (this.driverLicense == null && this.driverLicenseIssueLocation == null &&
@@ -278,7 +278,7 @@ export default function (db) {
             this.driverLicenseIssueDate != null && this.driverLicenseExpirationDate != null) {
           return;
         }
-        throw new Error('All Driver license information should be provided.');
+        throw new Error.ValidationErrorItem('All Driver license information should be provided.', 'Validation Error', null, null);
       },
     },
   });
