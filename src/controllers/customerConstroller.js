@@ -58,7 +58,7 @@ export default class CustomerController {
         if (data) {
           const newCustomerValues = humps.camelizeKeys(req.body);
           this.customerSet
-            .update(newCustomerValues, { where: { id } })
+            .update(newCustomerValues, { where: { id }, individualHooks: true })
             .then(() => {
               ok(res, null, CUSTOMER_UPDATED_OK);
             });

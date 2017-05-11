@@ -1,7 +1,9 @@
 import Datatype from 'sequelize';
+import isUUID from 'validator/lib/isUUID';
+import Error from 'sequelize/lib/errors';
 
 export default function (db) {
-  const Customer = db.define('Customer', {
+  const customer = db.define('Customer', {
     id: {
       type: Datatype.UUID,
       primaryKey: true,
@@ -10,6 +12,9 @@ export default function (db) {
     ssn: {
       type: Datatype.STRING,
       field: 'ssn',
+      allowNull: false,
+      unique: 'isDuplicatedCustomerInformation',
+      isReadOnly: true,
       validate: {
         len: [0, 11],
       },
@@ -17,6 +22,7 @@ export default function (db) {
     firstName: {
       type: Datatype.STRING,
       field: 'first_name',
+      allowNull: false,
       validate: {
         len: [0, 20],
       },
@@ -24,6 +30,8 @@ export default function (db) {
     surname: {
       type: Datatype.STRING,
       field: 'surname',
+      allowNull: false,
+      unique: 'isDuplicatedCustomerInformation',
       validate: {
         len: [0, 20],
       },
@@ -31,6 +39,7 @@ export default function (db) {
     address1: {
       type: Datatype.STRING,
       field: 'address1',
+      allowNull: false,
       validate: {
         len: [0, 40],
       },
@@ -46,6 +55,7 @@ export default function (db) {
     city: {
       type: Datatype.STRING,
       field: 'city',
+      allowNull: false,
       validate: {
         len: [0, 40],
       },
@@ -53,6 +63,7 @@ export default function (db) {
     stateCode: {
       type: Datatype.STRING,
       field: 'state_code',
+      allowNull: false,
       validate: {
         len: [0, 2],
       },
@@ -60,6 +71,7 @@ export default function (db) {
     postalCode: {
       type: Datatype.STRING,
       field: 'postal_code',
+      allowNull: false,
       validate: {
         len: [0, 10],
       },
@@ -67,6 +79,7 @@ export default function (db) {
     countryCode: {
       type: Datatype.STRING,
       field: 'country_code',
+      allowNull: false,
       validate: {
         len: [0, 30],
       },
@@ -74,10 +87,14 @@ export default function (db) {
     birthDate: {
       type: Datatype.DATE,
       field: 'birth_date',
+      allowNull: false,
+      isReadOnly: true,
+      unique: 'isDuplicatedCustomerInformation',
     },
     mobilePhoneNumber: {
       type: Datatype.STRING,
       field: 'mobile_phone_number',
+      allowNull: false,
       validate: {
         len: [0, 10],
       },
@@ -85,6 +102,7 @@ export default function (db) {
     emailAddress: {
       type: Datatype.STRING,
       field: 'email_address',
+      allowNull: false,
       validate: {
         len: [0, 50],
         isEmail: true,
@@ -94,6 +112,7 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'state_id',
       allowNull: true,
+      isReadOnly: true,
       validate: {
         len: [0, 15],
       },
@@ -102,6 +121,7 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'state_id_issue_location',
       allowNull: true,
+      isReadOnly: true,
       validate: {
         len: [0, 20],
       },
@@ -110,16 +130,19 @@ export default function (db) {
       type: Datatype.DATE,
       field: 'state_id_issue_date',
       allowNull: true,
+      isReadOnly: true,
     },
     stateIdExpirationDate: {
       type: Datatype.DATE,
       field: 'state_id_expiration_date',
       allowNull: true,
+      isReadOnly: true,
     },
     passportId: {
       type: Datatype.STRING,
       field: 'passport_id',
       allowNull: true,
+      isReadOnly: true,
       validate: {
         len: [0, 15],
       },
@@ -128,6 +151,7 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'passport_id_issue_location',
       allowNull: true,
+      isReadOnly: true,
       validate: {
         len: [0, 20],
       },
@@ -136,16 +160,19 @@ export default function (db) {
       type: Datatype.DATE,
       field: 'passport_id_issue_date',
       allowNull: true,
+      isReadOnly: true,
     },
     passportIdExpirationDate: {
       type: Datatype.DATE,
       field: 'passport_id_expiration_date',
       allowNull: true,
+      isReadOnly: true,
     },
     driverLicense: {
       type: Datatype.STRING,
       field: 'driver_license',
       allowNull: true,
+      isReadOnly: true,
       validate: {
         len: [0, 15],
       },
@@ -154,6 +181,7 @@ export default function (db) {
       type: Datatype.STRING,
       field: 'driver_license_issue_location',
       allowNull: true,
+      isReadOnly: true,
       validate: {
         len: [0, 20],
       },
@@ -162,15 +190,19 @@ export default function (db) {
       type: Datatype.DATE,
       field: 'driver_license_issue_date',
       allowNull: true,
+      isReadOnly: true,
     },
     driverLicenseExpirationDate: {
       type: Datatype.DATE,
       field: 'driver_license_expiration_date',
       allowNull: true,
+      isReadOnly: true,
     },
     thirdPartyUserId: {
       type: Datatype.STRING,
       field: 'third_party_user_id',
+      allowNull: false,
+      isReadOnly: true,
       validate: {
         len: [0, 100],
       },
@@ -178,33 +210,78 @@ export default function (db) {
   }, {
     underscored: true,
     freezeTableName: true, // Model tableName will be the same as the model name
-    validate: {
-      stateIdCompleteInformation() {
-        if ((this.stateId === null) !==
-          (this.stateIdIssueLocation === null) !==
-          (this.stateIdIssueDate === null) !==
-          (this.stateIdExpirationDate === null)) {
-          throw new Error('All State information should be provided.');
+    hooks: {
+      beforeUpdate(Customer) { // Enforce ReadOnly columns to block update when accessing through the PUT method of customerController.
+        const keys = [];
+        Object.keys(Customer._changed) // eslint-disable-line no-underscore-dangle
+            .forEach((fieldName) => {
+              keys.push(fieldName);
+            });
+
+        if (!keys.length) {
+          return;
         }
+
+        const validationErrors = [];
+
+        keys.forEach((fieldName) => {
+          if (Customer.rawAttributes[fieldName].isReadOnly == null) {
+            return;
+          }
+          if (Customer.rawAttributes[fieldName].isReadOnly) {
+            validationErrors.push(new Error.ValidationErrorItem(`Field ${fieldName} cannot be updated`, 'readOnly Violation', fieldName, Customer[fieldName]));
+          }
+        });
+
+        if (validationErrors.length) {
+          throw new Error.ValidationError(null, validationErrors);
+        }
+      },
+    },
+    validate: {
+      idIsValidUUID() {
+        if (this.id == null) {
+          return;
+        }
+        if (!isUUID(this.id, 4)) {
+          throw new Error('Id is not valid UUID.');
+        }
+      },
+      stateIdCompleteInformation() {
+        if (this.stateId == null && this.stateIdIssueLocation == null &&
+            this.stateIdIssueDate == null && this.stateIdExpirationDate == null) {
+          return;
+        }
+        if (this.stateId != null && this.stateIdIssueLocation != null &&
+            this.stateIdIssueDate != null && this.stateIdExpirationDate != null) {
+          return;
+        }
+        throw new Error('All State information should be provided.');
       },
       passportCompleteInformation() {
-        if ((this.passportId === null) !==
-          (this.passportIdIssueLocation === null) !==
-          (this.passportIdIssueDate === null) !==
-          (this.passportIdExpirationDate === null)) {
-          throw new Error('All Passport information should be provided.');
+        if (this.passportId == null && this.passportIdIssueLocation == null &&
+            this.passportIdIssueDate == null && this.passportIdExpirationDate == null) {
+          return;
         }
+        if (this.passportId != null && this.passportIdIssueLocation != null &&
+            this.passportIdIssueDate != null && this.passportIdExpirationDate != null) {
+          return;
+        }
+        throw new Error('All Passport information should be provided.');
       },
       driverLicenseCompleteInformation() {
-        if ((this.driverLicense === null) !==
-          (this.driverLicenseIssueLocation === null) !==
-          (this.driverLicenseIssueDate === null) !==
-          (this.driverLicenseExpirationDate === null)) {
-          throw new Error('All Driver license information should be provided.');
+        if (this.driverLicense == null && this.driverLicenseIssueLocation == null &&
+            this.driverLicenseIssueDate == null && this.driverLicenseExpirationDate == null) {
+          return;
         }
+        if (this.driverLicense != null && this.driverLicenseIssueLocation != null &&
+            this.driverLicenseIssueDate != null && this.driverLicenseExpirationDate != null) {
+          return;
+        }
+        throw new Error('All Driver license information should be provided.');
       },
     },
   });
 
-  return Customer;
+  return customer;
 }
