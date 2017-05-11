@@ -15,6 +15,8 @@ export default (callback) => {
         min: 0,
         idle: 10000,
       },
+      // disable logging; default: console.log
+      logging: false,
     });
 
   sequelize.authenticate().then(() => {
