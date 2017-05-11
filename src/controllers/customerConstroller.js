@@ -1,12 +1,20 @@
 import humps from 'humps';
 import isUUID from 'validator/lib/isUUID';
-import { notFound, ok, created, forbidden } from '../utils/action-result';
+import {
+  notFound,
+  ok,
+  created,
+  forbidden,
+  badRequest,
+  conflict,
+} from '../utils/action-result';
 import {
   CUSTOMER_CREATED_OK,
   GET_CUSTOMER_OK,
   CUSTOMER_UPDATED_OK,
   UNIQUE_ID_EXIST,
   INTERNAL_CODE_ID_EXIST,
+  INTERNAL_CODE_CONFLICTING,
 } from './infoMessages';
 
 export default class CustomerController {
@@ -42,10 +50,22 @@ export default class CustomerController {
         created(res, data, CUSTOMER_CREATED_OK);
       }).catch((err) => {
         if (err.name === 'SequelizeUniqueConstraintError') {
-          forbidden(res, UNIQUE_ID_EXIST, INTERNAL_CODE_ID_EXIST);
+          if (err.errors.length === 1) {
+            forbidden(res, UNIQUE_ID_EXIST, INTERNAL_CODE_ID_EXIST);
+            return;
+          }
+          const firstError = err.errors[0].message;
+          conflict(res, firstError, INTERNAL_CODE_CONFLICTING);
           return;
         }
-        res.status(200);
+        if (err.name === 'SequelizeValidationError') {
+          const firstError = err.errors[0].message;
+          badRequest(res, null, null, null, firstError);
+          return;
+        }
+        // If we got this far we don't know what happen
+        res.status(500);
+        // TODO: Log err and return a simple "Something went wrong";
         res.json(err);
       });
   }
@@ -61,6 +81,21 @@ export default class CustomerController {
             .update(newCustomerValues, { where: { id }, individualHooks: true })
             .then(() => {
               ok(res, null, CUSTOMER_UPDATED_OK);
+            }).catch((err) => {
+              if (err.name === 'SequelizeUniqueConstraintError') {
+                const firstError = err.errors[0].message;
+                conflict(res, firstError, INTERNAL_CODE_CONFLICTING);
+                return;
+              }
+              if (err.name === 'SequelizeValidationError') {
+                const firstError = err.errors[0].message;
+                badRequest(res, null, null, null, firstError);
+                return;
+              }
+              // If we got this far we don't know what happen
+              res.status(500);
+              // TODO: Log err and return a simple "Something went wrong";
+              res.json(err);
             });
         } else {
           notFound(res, id);
