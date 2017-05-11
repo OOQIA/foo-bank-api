@@ -9,7 +9,7 @@ initializeDb((error, db) => {
     return;
   }
 
-  customer(db).sync({ force: true })
+  customer(db).sync()
     .then(() => db.models.Customer.bulkCreate(customerSeed));
 
   transaction(db).sync();
