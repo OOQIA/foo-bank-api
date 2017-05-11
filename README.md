@@ -29,3 +29,8 @@ Getting Started
     ```sh
     npm run test
     ```
+6. **Build the application**
+    ***Note***: Since the application is using the latest ES6 features some of them are still not supported in the V 6.\*.\* of nodejs so it must be build first via:
+    ```sh
+    npm run build
+    ```
