@@ -17,11 +17,15 @@ Getting Started
     npm run migrate
     ```
 
-3. **Run the application**  
+4. **Run the application**  
     ```sh
     # Start development live-reload server
     npm run dev
 
     # Start production server:
     npm start
+    ```
+5. **Run Tests**
+    ```sh
+    npm run test
     ```
