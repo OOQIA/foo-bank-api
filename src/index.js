@@ -1,4 +1,3 @@
-import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -9,9 +8,7 @@ import CustomerRouter from './routes/customerRoute';
 import uniqueTransaction from './middleware/unique-transaction';
 
 const app = express();
-const baseApiUrl = '/api/v2';
-
-app.server = http.createServer(app);
+export const baseApiUrl = '/api/v2';
 
 // 3rd party middleware
 app.use(cors({
@@ -39,9 +36,11 @@ initializeDb((err, db) => {
   app.get('/', (req, res) => {
     res.json({ version: '1.0.0' });
   });
-
-  app.server.listen(process.env.PORT || config.port);
-  console.log(`Started on port ${app.server.address().port}`); // eslint-disable-line no-console
+  const port = process.env.PORT || config.port;
+  app.listen(port, () => {
+    console.log(`Started on port ${port}`); // eslint-disable-line no-console
+    app.emit('appServerStarted');
+  });
 });
 
 export default app;
