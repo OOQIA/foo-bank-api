@@ -1,12 +1,14 @@
-import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
 import config from './configs/config.json';
 import initializeDb from './db';
+import CustomerRouter from './routes/customerRoute';
+import uniqueTransaction from './middleware/unique-transaction';
 
 const app = express();
-app.server = http.createServer(app);
+export const baseApiUrl = '/api/v2';
 
 // 3rd party middleware
 app.use(cors({
@@ -17,17 +19,28 @@ app.use(bodyParser.json({
   limit: config.bodyLimit,
 }));
 
+// Protect your app from some well-known web vulnerabilities by setting HTTP headers appropriately.
+app.use(helmet());
+
 initializeDb((err, db) => {
   if (err) {
     console.error(err); // eslint-disable-line no-console
     return;
   }
+
+  app.use(uniqueTransaction(db));
+
+  const customerRouter = CustomerRouter(db);
+  app.use(baseApiUrl, customerRouter);
+
   app.get('/', (req, res) => {
     res.json({ version: '1.0.0' });
   });
-
-  app.server.listen(process.env.PORT || config.port);
-  console.log(`Started on port ${app.server.address().port}`); // eslint-disable-line no-console
+  const port = process.env.PORT || config.port;
+  app.listen(port, () => {
+    console.log(`Started on port ${port}`); // eslint-disable-line no-console
+    app.emit('appServerStarted');
+  });
 });
 
 export default app;
