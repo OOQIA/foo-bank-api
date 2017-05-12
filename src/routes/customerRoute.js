@@ -1,11 +1,12 @@
 import express from 'express';
 import customers from '../models/customer';
+import transaction from '../models/transaction';
 import CustomerController from '../controllers/customerConstroller';
 import { methodNotAllowedHandler } from '../utils/method-not-allowed-handler';
 
 export default (db) => {
   const router = express.Router();
-  const controller = new CustomerController(customers(db));
+  const controller = new CustomerController(customers(db), transaction(db));
 
   router.route('/users')
     .post((req, res) => controller.post(req, res))

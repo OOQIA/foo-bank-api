@@ -7,7 +7,8 @@ export default class ResponseResult {
     errors = [],
     id = 0,
     internalCode = null,
-    message = null) {
+    message = null,
+    previousResponse = null) {
     let infoMessage = info;
     let internalCodeMessage = internalCode;
 
@@ -33,6 +34,8 @@ export default class ResponseResult {
     };
     this.data = data;
 
+    this.previousResponse = previousResponse;
+
     // Clean up null properties from result;
     this.result = cleanObject(this.result);
     if (!data) {
@@ -40,6 +43,13 @@ export default class ResponseResult {
     } else {
       this.data = cleanObject(this.data);
       this.data = humps.decamelizeKeys(this.data);
+    }
+
+    if (!previousResponse) {
+      delete this.previousResponse;
+    } else {
+      this.previousResponse = cleanObject(this.previousResponse);
+      this.previousResponse = humps.decamelizeKeys(this.previousResponse);
     }
   }
 }

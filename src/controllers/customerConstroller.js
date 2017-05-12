@@ -16,14 +16,17 @@ import {
   INTERNAL_CODE_ID_EXIST,
   INTERNAL_CODE_CONFLICTING,
 } from './infoMessages';
+import logging from '../middleware/logging';
 
 export default class CustomerController {
-  constructor(customerSet) {
+  constructor(customerSet, transactionSet) {
     this.customerSet = customerSet;
+    this.transactionSet = transactionSet;
   }
 
   get(req, res) {
     const id = req.params.user_id;
+    let resData;
     if (!isUUID(id, 4)) {
       notFound(res, id);
       return;
@@ -32,11 +35,13 @@ export default class CustomerController {
       .findById((id), { attributes: { exclude: ['created_at', 'updated_at'] } })
       .then((data) => {
         if (data) {
+          resData = data;
           ok(res, data.dataValues, GET_CUSTOMER_OK);
         } else {
           notFound(res, id);
         }
       });
+    res.on('finish', logging(req, res, this.transactionSet));
   }
 
   post(req, res) {
@@ -47,7 +52,7 @@ export default class CustomerController {
         const data = {
           user_reference_id: customerReferenceId,
         };
-        created(res, data, CUSTOMER_CREATED_OK);
+        res.sentResult = created(res, data, CUSTOMER_CREATED_OK);
       }).catch((err) => {
         if (err.name === 'SequelizeUniqueConstraintError') {
           if (err.errors.length === 1) {
@@ -68,6 +73,7 @@ export default class CustomerController {
         // TODO: Log err and return a simple "Something went wrong";
         res.json(err);
       });
+    res.on('finish', logging(req, res, this.transactionSet));
   }
 
   put(req, res) {
@@ -80,7 +86,7 @@ export default class CustomerController {
           this.customerSet
             .update(newCustomerValues, { where: { id }, individualHooks: true })
             .then(() => {
-              ok(res, null, CUSTOMER_UPDATED_OK);
+              res.sentResult = ok(res, null, CUSTOMER_UPDATED_OK);
             }).catch((err) => {
               if (err.name === 'SequelizeUniqueConstraintError') {
                 const firstError = err.errors[0].message;
@@ -101,6 +107,7 @@ export default class CustomerController {
           notFound(res, id);
         }
       });
+    res.on('finish', logging(req, res, this.transactionSet));
   }
 }
 
