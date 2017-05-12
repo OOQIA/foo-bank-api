@@ -13,6 +13,7 @@ import customerModel from '../models/customer';
 process.env.NODE_ENV = 'test';
 const should = chai.should();
 chai.use(chaiHttp);
+let token = '';
 
 describe('Customers', () => {
   before((done) => { // Before each test we empty the database
@@ -20,7 +21,17 @@ describe('Customers', () => {
       const customerSet = customerModel(server.db);
       customerSet.destroy({ where: { ssn: '017365678' } })
         .then((rowDeleted) => {
-          done();
+          chai.request(server)
+            .post(`${baseApiUrl}/authenticate`)
+            .send({
+              name: 'testuser'
+              // username: 'testUser',
+              // password: '12345678'
+            })
+            .end((err, res) => {
+              token = res.body.token;
+              done();
+            });
         })
     });
   });
@@ -33,6 +44,7 @@ describe('Customers', () => {
       chai.request(server)
         .get(`${baseApiUrl}/users/502a0ff8-0511-45ea-93d5-5cd611d79581`)
         .set('X-Unique-Transaction-ID', '1')
+        .set('Authorization', `Bearer ${token}`)
         .end((err, res) => {
           res.body.data.should.be.a('object');
           res.should.have.status(200);
@@ -81,6 +93,7 @@ describe('Customers', () => {
       chai.request(server)
         .post(`${baseApiUrl}/users`)
         .set('X-Unique-Transaction-ID', '1')
+        .set('Authorization', `Bearer ${token}`)
         .send(newCustomer)
         .end((err, res) => {
           console.log(res.body);

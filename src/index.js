@@ -31,12 +31,13 @@ initializeDb((err, db) => {
   }
   app.db = db;
 
-  app.use(uniqueTransaction(db));
 
-  const customerRouter = CustomerRouter(db);
   const authRouter = AuthRouter();
-
   app.use(baseApiUrl, authRouter);
+
+  app.use(uniqueTransaction(db));
+  
+  const customerRouter = CustomerRouter(db);
   app.use(baseApiUrl, Auth, customerRouter);
 
   app.get('/', (req, res) => {
