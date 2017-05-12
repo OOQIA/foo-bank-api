@@ -1,5 +1,6 @@
 {
 	"port": 5000,
 	"bodyLimit": "800kb",
-	"corsHeaders": ["*"]
+	"corsHeaders": ["*"],
+	"secret": "LONGSECRETKEYHERE"
 }
