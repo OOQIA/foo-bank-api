@@ -1,6 +1,6 @@
 import compareJson from 'deep-diff';
 import { badRequest, conflict } from '../utils/action-result';
-import { 
+import {
         MISSING_UNIQUE_INTERNAL,
         MISSING_UNIQUE_MESSAGE,
         DUPLICATED_TRANSACTION_ID,
