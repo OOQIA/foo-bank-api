@@ -6,6 +6,7 @@ import config from './configs/config.json';
 import initializeDb from './db';
 import CustomerRouter from './routes/customerRoute';
 import uniqueTransaction from './middleware/unique-transaction';
+import auth from './middleware/authorize';
 
 const app = express();
 export const baseApiUrl = '/api/v2';
@@ -31,9 +32,9 @@ initializeDb((err, db) => {
   app.use(uniqueTransaction(db));
 
   const customerRouter = CustomerRouter(db);
-  app.use(baseApiUrl, customerRouter);
+  app.use(baseApiUrl, auth, customerRouter);
 
-  app.get('/', (req, res) => {
+  app.get('/', auth, (req, res) => {
     res.json({ version: '1.0.0' });
   });
   const port = process.env.PORT || config.port;
