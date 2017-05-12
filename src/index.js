@@ -32,18 +32,37 @@ initializeDb((err, db) => {
   app.db = db;
 
   app.get('/', (req, res) => {
-    res.json({ version: '1.0.0' });
+    res.json({
+      resources: [
+        {
+          link: `${baseApiUrl}/authenticate/`,
+          method: 'POST',
+        },
+        {
+          link: `${baseApiUrl}/users/:id`,
+          method: 'GET',
+        },
+        {
+          link: `${baseApiUrl}/users/:id`,
+          method: 'PUT',
+        },
+        {
+          link: `${baseApiUrl}/users/`,
+          method: 'POST',
+        },
+      ],
+    });
   });
 
   const authRouter = AuthRouter();
   app.use(baseApiUrl, authRouter);
 
   app.use(uniqueTransaction(db));
-  
+
   const customerRouter = CustomerRouter(db);
   app.use(baseApiUrl, Auth, customerRouter);
 
-  
+
   const port = process.env.PORT || config.port;
   app.listen(port, () => {
     console.log(`Started on port ${port}`); // eslint-disable-line no-console
