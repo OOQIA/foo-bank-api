@@ -1,6 +1,7 @@
 /* eslint-disable */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import uuid from 'uuid';
 import server, { baseApiUrl } from '../index';
 import {
   MISSING_UNIQUE_INTERNAL,
@@ -42,7 +43,7 @@ describe('Customers', () => {
       // done();
       chai.request(server)
         .get(`${baseApiUrl}/users/502a0ff8-0511-45ea-93d5-5cd611d79581`)
-        .set('X-Unique-Transaction-ID', '1')
+        .set('X-Unique-Transaction-ID', uuid.v4())
         .set('Authorization', `Bearer ${token}`)
         .end((err, res) => {
           res.body.data.should.be.a('object');
@@ -91,7 +92,7 @@ describe('Customers', () => {
       };
       chai.request(server)
         .post(`${baseApiUrl}/users`)
-        .set('X-Unique-Transaction-ID', '1')
+        .set('X-Unique-Transaction-ID', uuid.v4())
         .set('Authorization', `Bearer ${token}`)
         .send(newCustomer)
         .end((err, res) => {

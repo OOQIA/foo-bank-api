@@ -12,5 +12,5 @@ initializeDb((error, db) => {
   customer(db).sync()
     .then(() => db.models.Customer.bulkCreate(customerSeed));
 
-  transaction(db).sync();
+  transaction(db).sync({ force: true });
 });
