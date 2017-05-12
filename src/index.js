@@ -6,6 +6,8 @@ import config from './configs/config.json';
 import initializeDb from './db';
 import CustomerRouter from './routes/customerRoute';
 import uniqueTransaction from './middleware/unique-transaction';
+import Auth from './middleware/authorize';
+import AuthRouter from './routes/authRoute';
 
 const app = express();
 export const baseApiUrl = '/api/v2';
@@ -32,7 +34,10 @@ initializeDb((err, db) => {
   app.use(uniqueTransaction(db));
 
   const customerRouter = CustomerRouter(db);
-  app.use(baseApiUrl, customerRouter);
+  const authRouter = AuthRouter();
+
+  app.use(baseApiUrl, authRouter);
+  app.use(baseApiUrl, Auth, customerRouter);
 
   app.get('/', (req, res) => {
     res.json({ version: '1.0.0' });
