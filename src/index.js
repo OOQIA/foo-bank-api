@@ -31,6 +31,9 @@ initializeDb((err, db) => {
   }
   app.db = db;
 
+  app.get('/', (req, res) => {
+    res.json({ version: '1.0.0' });
+  });
 
   const authRouter = AuthRouter();
   app.use(baseApiUrl, authRouter);
@@ -40,9 +43,7 @@ initializeDb((err, db) => {
   const customerRouter = CustomerRouter(db);
   app.use(baseApiUrl, Auth, customerRouter);
 
-  app.get('/', (req, res) => {
-    res.json({ version: '1.0.0' });
-  });
+  
   const port = process.env.PORT || config.port;
   app.listen(port, () => {
     console.log(`Started on port ${port}`); // eslint-disable-line no-console
