@@ -7,15 +7,15 @@ export default class CustomerController {
   }
 
   post(req, res) {
-    const name = req.body.name;
-    if (name !== 'testuser') {
-      res.json({ sucess: false, message: 'Authentication Failed' });
+    const username = req.body.username;
+    const password = req.body.password;
+    if (username === 'testuser' && password === '12345678') {
+      const token = jwt.sign({ username: 'test', description: 'A test user.' }, config.secret, {
+        expiresIn: 86400,
+      });
+      res.json({ sucess: true, token });
+      return;
     }
-    const token = jwt.sign({ username: 'test', description: 'A test user.' }, config.secret, {
-      expiresIn: 86400,
-    });
-
-    res.json({ sucess: true, token });
+    res.json({ sucess: false, message: 'Authentication Failed' });
   }
-
 }

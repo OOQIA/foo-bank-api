@@ -24,9 +24,8 @@ describe('Customers', () => {
           chai.request(server)
             .post(`${baseApiUrl}/authenticate`)
             .send({
-              name: 'testuser'
-              // username: 'testUser',
-              // password: '12345678'
+              username: 'testuser',
+              password: '12345678'
             })
             .end((err, res) => {
               token = res.body.token;
@@ -96,7 +95,6 @@ describe('Customers', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(newCustomer)
         .end((err, res) => {
-          console.log(res.body);
           res.should.have.status(201);
           done();
         });

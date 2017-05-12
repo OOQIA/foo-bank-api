@@ -6,6 +6,7 @@ export default (req, res, next) => {
   if (token) {
     jwt.verify(token.replace('Bearer', '').trim(), config.secret, {}, (err, decoded) => {
       if (err) {
+        res.status(403);
         res.json(err);
         return;
       }
