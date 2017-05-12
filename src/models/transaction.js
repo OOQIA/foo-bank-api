@@ -3,7 +3,8 @@ import Datatype from 'sequelize';
 export default function (db) {
   const Transaction = db.define('Transaction', {
     xUniqueTransactionID: {
-      type: Datatype.STRING,
+      type: Datatype.UUID,
+      primaryKey: true,
       field: 'x_unique_transaction_id',
       validate: {
         len: [35],
@@ -23,9 +24,17 @@ export default function (db) {
         len: [30],
       },
     },
-    body: {
-      type: Datatype.TEXT,
-      field: 'body',
+    requestBody: {
+      type: Datatype.JSON,
+      field: 'request',
+    },
+    responseCode: {
+      type: Datatype.INTEGER,
+      field: 'response_code',
+    },
+    responseBody: {
+      type: Datatype.JSON,
+      field: 'response',
     },
   }, {
     freezeTableName: true, // Model tableName will be the same as the model name
