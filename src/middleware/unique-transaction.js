@@ -31,7 +31,7 @@ export default (db) => (req, res, next) => {
           return;
         }
         // If body is different from previous transaction send a bad request.
-        badRequest(res, DUPLICATED_TRANSACTION_DIFF_BODY_MESSAGE, DUPLICATED_TRANSACTION_ID);
+        badRequest(res, null, DUPLICATED_TRANSACTION_ID, null, DUPLICATED_TRANSACTION_DIFF_BODY_MESSAGE);
       });
     return;
   }
