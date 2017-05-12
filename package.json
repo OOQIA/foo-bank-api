@@ -75,6 +75,7 @@
     "express": "^4.15.2",
     "helmet": "^3.6.0",
     "humps": "^2.0.0",
+    "jsonwebtoken": "^7.4.0",
     "pg": "^6.1.5",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.30.4",
