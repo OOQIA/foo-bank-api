@@ -27,11 +27,11 @@ export default (db) => (req, res, next) => {
         const diff = compareJson.diff(req.body, xTransaction.requestBody);
         // Check if body is similar from previous registered transaction.
         if (!diff) {
-          conflict(res, DUPLICATED_TRANSACTION_MESSAGE, DUPLICATED_TRANSACTION_ID);
+          conflict(res, DUPLICATED_TRANSACTION_MESSAGE, DUPLICATED_TRANSACTION_ID, xTransaction.responseBody);
           return;
         }
         // If body is different from previous transaction send a bad request.
-        badRequest(res, DUPLICATED_TRANSACTION_DIFF_BODY_MESSAGE, DUPLICATED_TRANSACTION_ID);
+        badRequest(res, DUPLICATED_TRANSACTION_DIFF_BODY_MESSAGE, DUPLICATED_TRANSACTION_ID, xTransaction.responseBody);
       });
     return;
   }

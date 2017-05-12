@@ -7,23 +7,23 @@ export default (req, res, transactionSet) => () => {
     responseCode: res.statusCode,
   };
 
-  let retrievedTransaction;
+  if (res.sentResult) {
+    transaction.responseBody = res.sentResult;
+  }
 
   transactionSet.findOne({ where: { xUniqueTransactionID: transaction.xUniqueTransactionID } })
     .then((transactionToUpdate) => {
-      retrievedTransaction = transactionToUpdate;
-
-      if (!retrievedTransaction) {
-        transactionSet.create(transaction).catch((err) => {
-          // TODO: Error logging.
-          console.log(err);
-        });
+      if (transactionToUpdate) {
+        transactionToUpdate.update(transaction)
+          .catch((err) => {
+            // TODO: Error logging.
+            console.log(err);
+          });
       }
 
-      retrievedTransaction.update(transaction)
-        .catch((err) => {
-          // TODO: Error logging.
-          console.log(err);
-        });
+      transactionSet.create(transaction).catch((err) => {
+        // TODO: Error logging.
+        console.log(err);
+      });
     });
 };

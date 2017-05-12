@@ -52,7 +52,7 @@ export default class CustomerController {
         const data = {
           user_reference_id: customerReferenceId,
         };
-        created(res, data, CUSTOMER_CREATED_OK);
+        res.sentResult = created(res, data, CUSTOMER_CREATED_OK);
       }).catch((err) => {
         if (err.name === 'SequelizeUniqueConstraintError') {
           if (err.errors.length === 1) {
@@ -86,7 +86,7 @@ export default class CustomerController {
           this.customerSet
             .update(newCustomerValues, { where: { id }, individualHooks: true })
             .then(() => {
-              ok(res, null, CUSTOMER_UPDATED_OK);
+              res.sentResult = ok(res, null, CUSTOMER_UPDATED_OK);
             }).catch((err) => {
               if (err.name === 'SequelizeUniqueConstraintError') {
                 const firstError = err.errors[0].message;

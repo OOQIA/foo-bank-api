@@ -29,6 +29,10 @@ export default function (db) {
       type: Datatype.INTEGER,
       field: 'response_code',
     },
+    responseBody: {
+      type: Datatype.JSON,
+      field: 'response',
+    },
   }, {
     freezeTableName: true, // Model tableName will be the same as the model name
   });
