@@ -4,8 +4,9 @@ import chaiHttp from 'chai-http';
 import server, { baseApiUrl } from '../index';
 import {
   MISSING_UNIQUE_INTERNAL,
-  MISSING_UNIQUE_MESSAGE
-} from '../middleware/unique-transaction-messages'
+  MISSING_UNIQUE_MESSAGE,
+} from '../middleware/unique-transaction-messages';
+import customerModel from '../models/customer';
 
 // TODO: Need to handle a test configuration for a test database
 
@@ -16,12 +17,16 @@ chai.use(chaiHttp);
 describe('Customers', () => {
   before((done) => { // Before each test we empty the database
     server.on('appServerStarted', () => {
-      done();
+      const customerSet = customerModel(server.db);
+      customerSet.destroy({ where: { ssn: '017365678' } })
+        .then((rowDeleted) => {
+          done();
+        })
     });
   });
 
-  describe('/GET CUSTOMER:Id', () => {
-    it('it should get customer corresponding to that Id', (done) => {
+  describe('/GET CUSTOMERS:Id', () => {
+    it('It should get customer corresponding to that Id', (done) => {
       // const foo = 'bar';
       // foo.should.equal('bar');
       // done();
@@ -36,8 +41,8 @@ describe('Customers', () => {
     });
   });
 
-  describe('/GET CUSTOMER:Id no X-Unique-Transaction-ID', () => {
-    it('it should get bad request because X-Unique-Transaction-ID is not present in the headers', (done) => {
+  describe('/GET CUSTOMERS:Id no X-Unique-Transaction-ID', () => {
+    it('It should get bad request because X-Unique-Transaction-ID is not present in the headers', (done) => {
       // const foo = 'bar';
       // foo.should.equal('bar');
       // done();
@@ -48,6 +53,38 @@ describe('Customers', () => {
           res.body.result.code.should.equal(400);
           res.body.result.message.should.equal(MISSING_UNIQUE_MESSAGE);
           res.body.result.internal_code.should.equal(MISSING_UNIQUE_INTERNAL);
+          done();
+        });
+    });
+  });
+
+  describe('POST CUSTOMERS', () => {
+    it('It should add a new customer', (done) => {
+      const newCustomer = {
+        ssn: '017365678',
+        firstName: 'Jessica',
+        surname: 'Hall',
+        address1: '803 22th St N 3 1',
+        city: 'New York',
+        stateCode: 'NY',
+        postalCode: '74586',
+        countryCode: 'USA',
+        birthDate: '1990-12-22',
+        mobilePhoneNumber: '5551133899',
+        emailAddress: 'jessicamail@mail.com',
+        driverLicense: '657654321012345',
+        driverLicenseIssueLocation: 'NY',
+        driverLicenseIssueDate: '2015-12-02',
+        driverLicenseExpirationDate: '2022-12-02',
+        thirdPartyUserId: 'user3@example.com',
+      };
+      chai.request(server)
+        .post(`${baseApiUrl}/users`)
+        .set('X-Unique-Transaction-ID', '1')
+        .send(newCustomer)
+        .end((err, res) => {
+          console.log(res.body);
+          res.should.have.status(201);
           done();
         });
     });

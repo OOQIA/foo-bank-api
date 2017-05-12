@@ -27,6 +27,7 @@ initializeDb((err, db) => {
     console.error(err); // eslint-disable-line no-console
     return;
   }
+  app.db = db;
 
   app.use(uniqueTransaction(db));
 
